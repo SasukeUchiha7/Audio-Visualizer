@@ -1,1 +1,4 @@
-# audio-visualizer
+# Audio-visualizer
+
+A JavaScript audio visualizer.
+
