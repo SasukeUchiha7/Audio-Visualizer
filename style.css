@@ -21,8 +21,15 @@
   height: 100%;
 }
 
-#audio1 {
+#audio {
   width: 50%;
   margin: 50px auto;
   display: block;
+}
+
+#fileupload {
+  position: absolute;
+  top: 200px;
+  color: white;
+  z-index: 100;
 }
