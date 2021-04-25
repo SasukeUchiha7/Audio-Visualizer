@@ -5,15 +5,7 @@ let audio = new Audio("data:audio/x-wav;base64,//vgRAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 const audioctx = new AudioContext();
 
 const container = document.getElementById('container');
-const getCanvasElementById = (id: "canvas1"): HTMLCanvasElement => {
-    const canvas = document.getElementById(id);
-
-    if (!(canvas instanceof HTMLCanvasElement)) {
-        throw new Error(`The element of id "${id}" is not a HTMLCanvasElement. Make sure a <canvas id="${id}""> element is present in the document.`);
-    }
-
-    return canvas;
-}
+const canvas = document.getElementById('canvas1');
 const ctx = canvas.getContext('2d');
 
 console.log(canvas);
