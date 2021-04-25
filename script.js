@@ -32,12 +32,13 @@ file.addEventListener("change",()=>{
     analyser = audioctx.createAnalyser();
     audioSource.connect(analyser);
     analyser.connect(audioctx.destination);
-    analyser.fftSize = 64;
+    analyser.fftSize = 2048;
     const bufferLen = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLen);
 
     // @ts-ignore
-    const barWidth = canvas.width/bufferLen;
+    // const barWidth = (canvas.width/2)/bufferLen;
+    const barWidth = 15;
     let barHeight;
     let x;
 
@@ -46,31 +47,66 @@ file.addEventListener("change",()=>{
         // @ts-ignore
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         analyser.getByteFrequencyData(dataArray);
-        for (let i=0;i< bufferLen;i++){
-            barHeight = dataArray[i]*2;
-            ctx.fillStyle= 'white';
-            // @ts-ignore
-            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-            x += barWidth;
-        }
+        drawVisualizer(bufferLen, barHeight, barWidth, x, dataArray);
         requestAnimationFrame(animate);
     }
-
     animate();
 
 });
 
-// console.log(audioctx);
+/*** SPIRAL STYLE ****/
 
-// audio.src = 'audio.wav';
+function drawVisualizer(bufferLen, barHeight, barWidth, x, dataArray){
+    for (let i=0;i< bufferLen;i++){
+        barHeight = dataArray[i]*1.5;
+        ctx.save();
+        ctx.translate(canvas.width/2,canvas.height/2);
+        ctx.rotate(i * Math.PI * 10 /bufferLen);
+        const hue = i*0.3;
+        // ctx.fillStyle = "white";
+        //     // @ts-ignore
+        // ctx.fillRect(barWidth, barHeight , barWidth+3, 5);
+        ctx.fillStyle= 'hsl('+hue+',100%,'+ barHeight/3 +'%)';
+        //@ts-ignore
+        ctx.fillRect(0, 0, barWidth, barHeight);
+        x += barWidth;
+        ctx.restore();
+    }
+}
 
-// play_btn.addEventListener('click', ()=>{
-//     audio.play();
-//     audio.addEventListener('playing', ()=>{
-//         console.log("Started playing audio");
-//     });
-// });
+/**** CENTER TO END BAR STYLE ****/
 
+// function drawVisualizer(bufferLen, barHeight, barWidth, x, dataArray){
+//     for (let i=0;i< bufferLen;i++){
+//             barHeight = dataArray[i]*2;
+//             const red = i* barHeight/20;
+//             const green = i*8;
+//             const blue = barHeight/8;
+//             ctx.fillStyle = "white";
+//             // @ts-ignore
+//             ctx.fillRect(canvas.width/2-x, canvas.height - barHeight -30, barWidth, 5);
+//             // ctx.fillStyle= 'rgb('+red+','+green+','+blue+')';
+//             // // @ts-ignore
+//             // ctx.fillRect(canvas.width/2-x, canvas.height - barHeight, barWidth, barHeight);
+//             x += barWidth;
+//         }
+//     for (let i=0;i< bufferLen;i++){
+//             barHeight = dataArray[i]*2;
+//             const red = i* barHeight/20;
+//             const green = i*8;
+//             const blue = barHeight/8;
+//             ctx.fillStyle = "white";
+//             // @ts-ignore
+//             ctx.fillRect(x, canvas.height - barHeight -30, barWidth, 5);
+//             // ctx.fillStyle = 'rgb('+red+','+green+','+blue+')';
+//             // // @ts-ignore
+//             // ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+//             x += barWidth;
+//         }
+// }
+
+
+/** FOR AUTO SOUND **/
 // auto_btn.addEventListener('click', playSound);
 
 // function playSound(){
