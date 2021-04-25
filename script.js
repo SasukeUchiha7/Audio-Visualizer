@@ -1,77 +1,71 @@
 const play_btn = document.getElementById("button1");
 const auto_btn = document.getElementById("button2");
-const file = document.getElementById('fileupload');
+const file = document.getElementById("fileupload");
 
-const container = document.getElementById('container');
-const canvas = document.getElementById('canvas1');
-// @ts-ignore
-const ctx = canvas.getContext('2d');
+const container = document.getElementById("container");
+const canvas = document.querySelector("canvas");
 
+const ctx = canvas.getContext("2d");
 console.log(canvas);
-// @ts-ignore
+
 canvas.width = window.innerHeight;
-// @ts-ignore
+
 canvas.height = window.innerHeight;
 
 let audioSource;
 let analyser;
 
-file.addEventListener("change",()=>{
-    const audio = document.getElementById('audio');
-    // @ts-ignore
-    const files= file.files;
-    const audioctx = new AudioContext();
-    // @ts-ignore
-    audio.src = URL.createObjectURL(files[0]);
-    // @ts-ignore
-    audio.load();
-    // @ts-ignore
-    audio.play();
-    // @ts-ignore
-    audioSource = audioctx.createMediaElementSource(audio);
-    analyser = audioctx.createAnalyser();
-    audioSource.connect(analyser);
-    analyser.connect(audioctx.destination);
-    analyser.fftSize = 2048;
-    const bufferLen = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLen);
+file.addEventListener("change", () => {
+  const audio = document.querySelector("audio");
+  // @ts-ignore
+  const files = file.files;
+  const audioctx = new AudioContext();
+  audio.src = URL.createObjectURL(files[0]);
 
-    // @ts-ignore
-    // const barWidth = (canvas.width/2)/bufferLen;
-    const barWidth = 15;
-    let barHeight;
-    let x;
+  audio.load();
 
-    function animate(){
-        x=0;
-        // @ts-ignore
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        analyser.getByteFrequencyData(dataArray);
-        drawVisualizer(bufferLen, barHeight, barWidth, x, dataArray);
-        requestAnimationFrame(animate);
-    }
-    animate();
+  audio.play();
 
+  audioSource = audioctx.createMediaElementSource(audio);
+  analyser = audioctx.createAnalyser();
+  audioSource.connect(analyser);
+  analyser.connect(audioctx.destination);
+  analyser.fftSize = 2048;
+  const bufferLen = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLen);
+
+  // const barWidth = (canvas.width/2)/bufferLen;
+  const barWidth = 15;
+  let barHeight;
+  let x;
+
+  function animate() {
+    x = 0;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    analyser.getByteFrequencyData(dataArray);
+    drawVisualizer(bufferLen, barHeight, barWidth, x, dataArray);
+    requestAnimationFrame(animate);
+  }
+  animate();
 });
 
 /*** SPIRAL STYLE ****/
 
-function drawVisualizer(bufferLen, barHeight, barWidth, x, dataArray){
-    for (let i=0;i< bufferLen;i++){
-        barHeight = dataArray[i]*1.5;
-        ctx.save();
-        ctx.translate(canvas.width/2,canvas.height/2);
-        ctx.rotate(i * Math.PI * 10 /bufferLen);
-        const hue = i*0.3;
-        // ctx.fillStyle = "white";
-        //     // @ts-ignore
-        // ctx.fillRect(barWidth, barHeight , barWidth+3, 5);
-        ctx.fillStyle= 'hsl('+hue+',100%,'+ barHeight/3 +'%)';
-        //@ts-ignore
-        ctx.fillRect(0, 0, barWidth, barHeight);
-        x += barWidth;
-        ctx.restore();
-    }
+function drawVisualizer(bufferLen, barHeight, barWidth, x, dataArray) {
+  for (let i = 0; i < bufferLen; i++) {
+    barHeight = dataArray[i] * 1;
+    ctx.save();
+    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.rotate(i * 4.184); //new
+    const hue = 120 + i * 0.3;
+    // ctx.fillStyle = "white";
+    //     // @ts-ignore
+    // ctx.fillRect(barWidth, barHeight , barWidth+3, 5);
+    ctx.fillStyle = "hsl(" + hue + ",100%," + barHeight / 3 + "%)";
+    ctx.fillRect(0, 0, barWidth-5, barHeight);
+    x += barWidth;
+    ctx.restore();
+  }
 }
 
 /**** CENTER TO END BAR STYLE ****/
@@ -105,7 +99,6 @@ function drawVisualizer(bufferLen, barHeight, barWidth, x, dataArray){
 //         }
 // }
 
-
 /** FOR AUTO SOUND **/
 // auto_btn.addEventListener('click', playSound);
 
@@ -118,4 +111,3 @@ function drawVisualizer(bufferLen, barHeight, barWidth, x, dataArray){
 //         oscillator.stop();
 //     }, 100);
 // }
-
